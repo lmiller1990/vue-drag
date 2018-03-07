@@ -2,12 +2,8 @@
   <div id="outer">
     <div class="wrapper">
       <div 
+        v-drag
         id="dragger"
-        ref="dragger"
-        @mousedown="mousedownBox"
-        @mousemove="mousemoveBox"
-        @mouseleave="cancelMove"
-        @mouseup="cancelMove"
       >
       </div>
     </div>
@@ -15,48 +11,13 @@
 </template>
 
 <script>
+import drag from './drag'
+
 export default {
   name: 'app',
 
-  data () {
-    return {
-      initialX: 0,
-      initialY: 0,
-      draggerOffsetX: 0,
-      draggerOffsetY: 0,
-      dragger: null,
-      down: false
-    }
-  },
-
-  mounted () {
-    this.dragger = this.$refs.dragger
-    this.setInitialOffset()
-  },
-
-  methods: {
-    setInitialOffset () {
-      this.draggerOffsetX = this.dragger.offsetLeft
-      this.draggerOffsetY = this.dragger.offsetTop
-    },
-
-    mousemoveBox (e) {
-      if (this.down) {
-        this.dragger.style.left = this.draggerOffsetX + (e.clientX - this.initialX) + 'px'
-        this.dragger.style.top = this.draggerOffsetY + (e.clientY - this.initialY) + 'px'
-      }    
-    },
-
-    mousedownBox (e) {
-      this.down = true
-      this.initialX = e.clientX
-      this.initialY = e.clientY
-    },
-
-    cancelMove (e) {
-      this.down = false
-      this.setInitialOffset()
-    }
+  directives: {
+    drag
   }
 }
 </script>
