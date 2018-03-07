@@ -1,25 +1,13 @@
 <template>
-  <div id="outer" 
-    @mousemove="mouseoverOuter"
-  >
-    <div>
-      <div>mouse x: {{ mouseX }}</div>
-      <div>mouse y: {{ mouseY }}</div>
-      <div>Inside box? {{ insideBox }}</div>
-      <div>draggerOffsetX: {{ draggerOffsetX }}</div>
-      <div>draggerOffsetY: {{ draggerOffsetY }}</div>
-      <div>down: {{ down }}</div>
-      <div>Before X/Y: {{ beforeX }} / {{ beforeY }}</div>
-    </div>
+  <div id="outer">
     <div class="wrapper">
       <div 
         id="dragger"
         ref="dragger"
-        @mouseenter="mouseenterBox"
-        @mouseleave="mouseleaveBox"
         @mousedown="mousedownBox"
-        @mouseup="mouseupBox"
         @mousemove="mousemoveBox"
+        @mouseleave="cancelMove"
+        @mouseup="cancelMove"
       >
       </div>
     </div>
@@ -32,13 +20,10 @@ export default {
 
   data () {
     return {
-      beforeX: 0,
-      beforeY: 0,
+      initialX: 0,
+      initialY: 0,
       draggerOffsetX: 0,
       draggerOffsetY: 0,
-      mouseX: 0,
-      mouseY: 0,
-      insideBox: false,
       dragger: null,
       down: false
     }
@@ -46,49 +31,31 @@ export default {
 
   mounted () {
     this.dragger = this.$refs.dragger
-    this.setInitial()
+    this.setInitialOffset()
   },
 
   methods: {
-    setInitial () {
-      console.log('reset')
+    setInitialOffset () {
       this.draggerOffsetX = this.dragger.offsetLeft
       this.draggerOffsetY = this.dragger.offsetTop
     },
 
     mousemoveBox (e) {
       if (this.down) {
-        this.dragger.style.left = this.draggerOffsetX + (e.clientX - this.beforeX) + 'px'
-        this.dragger.style.top = this.draggerOffsetY + (e.clientY - this.beforeY) + 'px'
-      } else {
-        console.log('nothing')
-      }
+        this.dragger.style.left = this.draggerOffsetX + (e.clientX - this.initialX) + 'px'
+        this.dragger.style.top = this.draggerOffsetY + (e.clientY - this.initialY) + 'px'
+      }    
     },
 
     mousedownBox (e) {
       this.down = true
-      this.beforeX = e.clientX
-      this.beforeY = e.clientY
+      this.initialX = e.clientX
+      this.initialY = e.clientY
     },
 
-    mouseupBox (e) {
+    cancelMove (e) {
       this.down = false
-      this.setInitial()
-    },
-
-    mouseleaveBox (e) {
-      this.insideBox = false
-      this.down = false
-      this.setInitial()
-    },
-
-    mouseenterBox (e) {
-      this.insideBox = true
-    },
-
-    mouseoverOuter (e) {
-      this.mouseX = e.clientX
-      this.mouseY = e.clientY
+      this.setInitialOffset()
     }
   }
 }
