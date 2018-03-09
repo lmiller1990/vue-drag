@@ -10,6 +10,7 @@
         id="dragger"
         @click="click"
         @mousedown="mousedown"
+        @mouseup="mouseup"
       >
       </div>
         <!--</div>-->
@@ -28,6 +29,7 @@ export default {
 
   data () {
     return {
+      overlaySpan: null,
       draggerOffsetX: 0,
       draggerOffsetY: 0,
       initialX: 0,
@@ -53,6 +55,10 @@ export default {
 
     mouseup () {
       this.down = false
+      this.overlaySpan.removeEventListener('mouseup', this.mouseup)
+      this.overlaySpan.removeEventListener('mousedown', this.mousedown)
+      this.overlaySpan.removeEventListener('mousemove', this.mousemove)
+      this.overlaySpan.remove()
       this.setPos()
     },
 
@@ -61,11 +67,10 @@ export default {
       this.initialY = e.clientY
       this.down = true
       const outer = document.createElement('span')
+      this.overlaySpan = outer
       outer.setAttribute('class', 'wrapper')
       outer.addEventListener('mousemove', (e) => this.mousemove(e))
-      e.target.parentElement.append(
-        outer
-      )
+      e.target.parentElement.append(outer)
       e.target.addEventListener('mouseup', (e) => this.mouseup(e))
       e.target.addEventListener('mousemove', (e) => this.mousemove(e))
     },
