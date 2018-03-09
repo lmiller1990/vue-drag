@@ -30,8 +30,8 @@ export default Vue.directive('drag', {
     })
 
     el.addEventListener('mouseout', () => {
-      down = false
-      setInitialOffset(el)
+      // down = false
+      // setInitialOffset(el)
     })
 
     el.addEventListener('mousemove', (e) => {

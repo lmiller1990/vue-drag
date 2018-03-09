@@ -1,12 +1,18 @@
 <template>
   <div id="outer">
-    <div class="wrapper">
+<!--    <div 
+      class="wrapper"
+      @mousemove="mousemove"
+      @mouseup="mouseup"
+      >-->
       <div 
-        v-drag
+        ref="dragger"
         id="dragger"
+        @click="click"
+        @mousedown="mousedown"
       >
       </div>
-    </div>
+        <!--</div>-->
   </div>
 </template>
 
@@ -18,6 +24,58 @@ export default {
 
   directives: {
     drag
+  },
+
+  data () {
+    return {
+      draggerOffsetX: 0,
+      draggerOffsetY: 0,
+      initialX: 0,
+      initialY: 0,
+      down: false,
+      el: null
+    }
+  },
+
+  mounted () {
+    this.el = this.$refs.dragger
+    this.setPos()
+  },
+
+  methods: {
+    click (e) {
+    },
+
+    setPos () {
+      this.draggerOffsetX = this.el.offsetLeft
+      this.draggerOffsetY = this.el.offsetTop
+    },
+
+    mouseup () {
+      this.down = false
+      this.setPos()
+    },
+
+    mousedown (e) {
+      this.initialX = e.clientX
+      this.initialY = e.clientY
+      this.down = true
+      const outer = document.createElement('span')
+      outer.setAttribute('class', 'wrapper')
+      outer.addEventListener('mousemove', (e) => this.mousemove(e))
+      e.target.parentElement.append(
+        outer
+      )
+      e.target.addEventListener('mouseup', (e) => this.mouseup(e))
+      e.target.addEventListener('mousemove', (e) => this.mousemove(e))
+    },
+
+    mousemove (e) {
+      if (this.down) {
+        this.el.style.left = this.draggerOffsetX + (e.clientX - this.initialX) + 'px'
+        this.el.style.top = this.draggerOffsetY + (e.clientY - this.initialY) + 'px'
+      }    
+    }
   }
 }
 </script>
@@ -32,6 +90,7 @@ body {
 }
 
 .wrapper {
+  background-color: silver;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -40,7 +99,7 @@ body {
 
 #dragger {
   position: absolute;
-  border: 1px solid silver;
+  border: 1px solid red;
   width: 100px;
   height: 100px;
 }
