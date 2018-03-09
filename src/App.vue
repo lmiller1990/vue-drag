@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import drag from './drag'
+import drag from '@branu-jp/v-drag'
 
 export default {
   name: 'app',
