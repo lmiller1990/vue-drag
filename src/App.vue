@@ -1,24 +1,19 @@
 <template>
   <div id="outer">
 <!--    <div 
-      class="wrapper"
-      @mousemove="mousemove"
+      ref="dragger"
+      id="dragger"
+      @click="click"
+      @mousedown="mousedown"
       @mouseup="mouseup"
-      >-->
-      <div 
-        ref="dragger"
-        id="dragger"
-        @click="click"
-        @mousedown="mousedown"
-        @mouseup="mouseup"
-      >
-      </div>
-        <!--</div>-->
+    >
+</div>-->
+    <div id="dragger" v-drag></div>
   </div>
 </template>
 
 <script>
-import drag from '@branu-jp/v-drag'
+import drag from './drag'
 
 export default {
   name: 'app',
@@ -41,7 +36,7 @@ export default {
 
   mounted () {
     this.el = this.$refs.dragger
-    this.setPos()
+    // this.setPos()
   },
 
   methods: {
@@ -49,6 +44,7 @@ export default {
     },
 
     setPos () {
+      console.log('set')
       this.draggerOffsetX = this.el.offsetLeft
       this.draggerOffsetY = this.el.offsetTop
     },
@@ -76,6 +72,7 @@ export default {
     },
 
     mousemove (e) {
+      console.log('move')
       if (this.down) {
         this.el.style.left = this.draggerOffsetX + (e.clientX - this.initialX) + 'px'
         this.el.style.top = this.draggerOffsetY + (e.clientY - this.initialY) + 'px'
